@@ -1,8 +1,3 @@
-variable "cloud_run_job_name" {
-  type    = string
-  description = "Cloud Run Job name"
-}
-
 variable "cloud_run_service_name" {
   type    = string
   description = "Cloud Run Service name"

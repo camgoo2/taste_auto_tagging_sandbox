@@ -1,0 +1,22 @@
+[
+    {
+      "mode": "NULLABLE",
+      "name": "raw_tag",
+      "type": "STRING"
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "tag",
+      "type": "STRING"
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "tag_category",
+      "type": "STRING"
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "entity_type",
+      "type": "STRING"
+    }
+  ]

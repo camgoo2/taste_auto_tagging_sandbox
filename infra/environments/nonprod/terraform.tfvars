@@ -4,15 +4,13 @@ location = "australia-southeast1"
 
 location_id = "australia-southeast1-c"
 
-use_case = "taste-auto-tagging"
-
-terraform_test_bucket = "terraform-test-bucket"
+use_case = "taste-auto-tagging-sandbox"
 
 use_case_conversation = "taiste-recipe-conversation"
 
 cloud_run_job_name = "data-preprocessing"
 
-cloud_run_service_name = "search-api"
+cloud_run_service_name = "tagging-feedback-apis"
 
 enable_apis = true
 
@@ -37,11 +35,12 @@ bq_table_entity_tag_prediction_evaluation = "entity_tag_prediction_evaluation"
 
 bq_table_overall_evaluation_metrics = "overall_evaluation_metrics"
 
-mlops_sa_email = "mlops-service-account@even-lyceum-400005.iam.gserviceaccount.com"
+bq_table_recipe_tag_taxonomy = "recipe_tag_taxonomy"
+
+mlops_sa_email = "new-mlops-service-account@even-lyceum-400005.iam.gserviceaccount.com"
 
 mlops_sa_roles_list = [
     "roles/aiplatform.admin",
-    "roles/discoveryengine.googleapis.com",
     "roles/artifactregistry.admin",
     "roles/bigquery.dataEditor",
     "roles/run.developer",
@@ -51,4 +50,4 @@ mlops_sa_roles_list = [
     "roles/run.invoker"
 ]
 
-environment = "nprod"
+environment = "nonprod"

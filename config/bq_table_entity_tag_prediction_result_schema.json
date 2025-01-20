@@ -1,0 +1,54 @@
+[
+    {
+      "mode": "REQUIRED",
+      "name": "prediction_id",
+      "type": "STRING"
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "entity_id",
+      "type": "STRING"
+    },
+    {
+      "mode": "REQUIRED",
+      "name": "insert_timestamp",
+      "type": "TIMESTAMP"
+    },
+    {
+      "mode": "REQUIRED",
+      "name": "entity_type",
+      "type": "STRING"
+    },
+    {
+      "mode": "REQUIRED",
+      "name": "request",
+      "type": "JSON"
+    },
+    {
+      "fields": [
+        {
+          "mode": "NULLABLE",
+          "name": "tag",
+          "type": "STRING"
+        },
+        {
+          "mode": "NULLABLE",
+          "name": "tag_category",
+          "type": "STRING"
+        },
+        {
+          "mode": "NULLABLE",
+          "name": "confidence_score",
+          "type": "FLOAT"
+        },
+        {
+          "mode": "NULLABLE",
+          "name": "explanation",
+          "type": "STRING"
+        }
+      ],
+      "mode": "REPEATED",
+      "name": "tags",
+      "type": "RECORD"
+    }
+  ]

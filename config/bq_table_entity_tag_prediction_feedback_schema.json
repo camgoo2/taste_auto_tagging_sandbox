@@ -1,0 +1,29 @@
+[
+    {
+      "name": "prediction_id",
+      "type": "STRING"
+    },
+    {
+      "name": "insert_timestamp",
+      "type": "TIMESTAMP"
+    },
+    {
+      "name": "overall_feedback",
+      "type": "INTEGER"
+    },
+    {
+      "fields": [
+        {
+          "name": "tag",
+          "type": "STRING"
+        },
+        {
+          "name": "tag_category",
+          "type": "STRING"
+        }
+      ],
+      "mode": "REPEATED",
+      "name": "saved_tags",
+      "type": "RECORD"
+    }
+  ]

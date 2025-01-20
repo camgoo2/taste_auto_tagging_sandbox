@@ -1,0 +1,76 @@
+[
+    {
+      "description": "The unique identifier for the recipe.\n(Fapi ID)",
+      "mode": "NULLABLE",
+      "name": "recipe_id",
+      "type": "STRING"
+    },
+    {
+      "description": "Ground truth tags for the recipe.",
+      "mode": "REPEATED",
+      "name": "gt_tags",
+      "type": "STRING"
+    },
+    {
+      "description": "Predicted tags for the recipe.\n",
+      "mode": "REPEATED",
+      "name": "predicted_tags",
+      "type": "STRING"
+    },
+    {
+      "description": "True positives count.",
+      "mode": "REQUIRED",
+      "name": "tp",
+      "type": "INTEGER"
+    },
+    {
+      "description": "False positives count.\nFalse positives count.\nFalse positives count.\n",
+      "mode": "REQUIRED",
+      "name": "fp",
+      "type": "INTEGER"
+    },
+    {
+      "description": "False negatives count.\n",
+      "mode": "REQUIRED",
+      "name": "fn",
+      "type": "INTEGER"
+    },
+    {
+      "description": "Precision metric for the recipe.",
+      "mode": "REQUIRED",
+      "name": "precision",
+      "type": "FLOAT"
+    },
+    {
+      "description": "Recall metric for the recipe.\n",
+      "mode": "NULLABLE",
+      "name": "recall",
+      "type": "FLOAT"
+    },
+    {
+      "description": "F1 score for the recipe.\n",
+      "mode": "NULLABLE",
+      "name": "f1",
+      "type": "FLOAT"
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "run_id",
+      "type": "STRING"
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "fp_list_str",
+      "type": "STRING"
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "tp_list_str",
+      "type": "STRING"
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "fn_list_str",
+      "type": "STRING"
+    }
+  ]

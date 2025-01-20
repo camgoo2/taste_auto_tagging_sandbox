@@ -55,6 +55,14 @@ module "big_query_table_overall_evaluation_metrics" {
   depends_on = [module.big_query_ds]
 }
 
+module "big_query_table_recipe_tag_taxonomy" {
+  source        = "../../modules/big_query_table"
+  project_id = var.project_name
+  bq_dataset_id = var.dataset_id
+  bq_table_id = var.bq_table_recipe_tag_taxonomy
+  depends_on = [module.big_query_ds]
+}
+
 module "google_storage_bucket" {
   source        = "../../modules/cloud_storage"
   project_name  = var.project_name
@@ -62,9 +70,25 @@ module "google_storage_bucket" {
   bucket_name   = "${var.use_case}-${var.environment}"
 }
 
-module "google_storage_test_bucket" {
+module "google_storage_bucket_test" {
   source        = "../../modules/cloud_storage"
   project_name  = var.project_name
   location      = var.location
-  bucket_name   = "${var.terraform_test_bucket}-${var.environment}"
+  bucket_name   = "${var.use_case}-${var.environment}-test"
+}
+
+module "artifact_registry" {
+  source        = "../../modules/artifact_registry"
+  project_name  = var.project_name
+  location      = var.location
+  repository_id = var.use_case
+}
+
+module "cloud_run" {
+  source        = "../../modules/cloud_run"
+  environment = var.environment
+  project_id = var.project_name
+  location = var.location
+  cloud_run_service_name = var.cloud_run_service_name
+  service_account_email = var.mlops_sa_email
 }
