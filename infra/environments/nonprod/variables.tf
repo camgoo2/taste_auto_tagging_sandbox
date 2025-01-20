@@ -23,11 +23,6 @@ variable "use_case" {
   description = "Use case name"
 }
 
-variable "terraform_test_bucket" {
-  type    = string
-  description = "The test bucket for terraform-not required permanently"
-}
-
 variable "use_case_conversation" {
   type    = string
   description = "Additional use case name for phase 2 conversation to not overwrite phase 1 infra"
@@ -77,6 +72,11 @@ variable "bq_table_overall_evaluation_metrics" {
   type    = string
   description = "The name of the Big Query table overall evaluation metrics are saved to"
 }
+
+  variable "bq_table_recipe_tag_taxonomy" {
+  type        = string
+  description = "The recipe taxonomy"
+  }
 
 variable "mlops_sa_email" {
     type = string
