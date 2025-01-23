@@ -13,6 +13,18 @@ on:
         value: ${{ jobs.terraform.outputs.project_name }}
       location:
         value: ${{ jobs.terraform.outputs.location }}
+      use_case:
+        value: ${{ jobs.terraform.outputs.use_case }}
+      dataset_id:
+        value: ${{ jobs.terraform.outputs.dataset_id }}
+      # bq_table_processed_recipe_id:
+      #   value: ${{ jobs.terraform.outputs.bq_table_processed_recipe_id }}
+      # bq_table_exclude_recipes_id:
+      #   value: ${{ jobs.terraform.outputs.bq_table_exclude_recipes_id }}
+      cloud_run_service_name:
+        value: ${{ jobs.terraform.outputs.cloud_run_service_name }}
+      mlops_sa_email:
+        value:  ${{ jobs.terraform.outputs.mlops_sa_email }}
 
 jobs:
   terraform:
@@ -25,6 +37,18 @@ jobs:
       run:
         shell: bash
         working-directory: "infra/environments/${{ inputs.ENVIRONMENT }}"
+
+    outputs:
+      project_name: ${{ steps.export_vars.outputs.project_name }}
+      location: ${{ steps.export_vars.outputs.location }}
+      use_case: ${{ steps.export_vars.outputs.use_case }}
+      dataset_id: ${{ steps.export_vars.outputs.dataset_id }}
+      # bq_table_processed_recipe_id: ${{ steps.export_vars.outputs.bq_table_processed_recipe_id }}
+      # bq_table_exclude_recipes_id: ${{ steps.export_vars.outputs.bq_table_exclude_recipes_id }}
+      cloud_run_job_name: ${{ steps.export_vars.outputs.cloud_run_job_name }}
+      cloud_run_service_name: ${{ steps.export_vars.outputs.cloud_run_service_name }}
+      cloud_run_service_dev_name: ${{ steps.export_vars.outputs.cloud_run_service_dev_name }}
+      mlops_sa_email: ${{ steps.export_vars.outputs.mlops_sa_email }}
 
     steps:
       - name: Checkout
@@ -56,3 +80,9 @@ jobs:
         run: |
           echo "project_name=$(terraform output -raw project_name)" >> "$GITHUB_OUTPUT"
           echo "location=$(terraform output -raw location)" >> "$GITHUB_OUTPUT"
+          echo "use_case=$(terraform output -raw use_case)" >> "$GITHUB_OUTPUT"
+          echo "dataset_id=$(terraform output -raw dataset_id)" >> "$GITHUB_OUTPUT"
+          # echo "bq_table_processed_recipe_id=$(terraform output -raw bq_table_processed_recipe_id)" >> "$GITHUB_OUTPUT"
+          # echo "bq_table_exclude_recipes_id=$(terraform output -raw bq_table_exclude_recipes_id)" >> "$GITHUB_OUTPUT"
+          echo "cloud_run_service_name=$(terraform output -raw cloud_run_service_name)" >> "$GITHUB_OUTPUT"
+          echo "mlops_sa_email=$(terraform output -raw mlops_sa_email)" >> "$GITHUB_OUTPUT"
