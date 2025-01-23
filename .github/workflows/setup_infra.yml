@@ -8,6 +8,11 @@ on:
     secrets:
       SVC_ACCOUNT_KEY:
         required: true
+    outputs:
+      project_name:
+        value: ${{ jobs.terraform.outputs.project_name }}
+      location:
+        value: ${{ jobs.terraform.outputs.location }}
 
 jobs:
   terraform:
