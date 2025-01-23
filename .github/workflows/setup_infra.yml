@@ -50,3 +50,9 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
+
+      - id: export_vars
+        name: Export output to env variables
+        run: |
+          echo "project_name=$(terraform output -raw project_name)" >> "$GITHUB_OUTPUT"
+          echo "location=$(terraform output -raw location)" >> "$GITHUB_OUTPUT"
