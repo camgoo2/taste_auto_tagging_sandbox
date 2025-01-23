@@ -16,3 +16,28 @@ jobs:
       ENVIRONMENT: nonprod
     secrets:
       SVC_ACCOUNT_KEY: ${{ secrets.SVC_ACCOUNT_KEY }}
+
+  docker-build-push-deploy-search-api:
+    name: "Search API"
+    uses: ./.github/workflows/build_deploy.yml
+    needs: [set-up-infra]
+    with:
+      ENVIRONMENT: nprod
+      IMAGE_NAME: ${{ needs.set-up-infra.outputs.cloud_run_service_name }}
+      WORKING_DIR: search
+      JOB_SERVICE: SERVICE
+      PROJECT_ID: ${{ needs.set-up-infra.outputs.project_name }}
+      LOCATION:  ${{ needs.set-up-infra.outputs.location }}
+      USE_CASE:  ${{ needs.set-up-infra.outputs.use_case }}
+      DATASET_ID: ${{ needs.set-up-infra.outputs.dataset_id }}
+      SERVICE_ACCOUNT: ${{ needs.set-up-infra.outputs.mlops_sa_email }}
+      VECTOR_INDEX_ENDPOINT_ID: ${{ needs.set-up-infra.outputs.vector_index_endpoint_id }}
+      VECTOR_INDEX_ENDPOINT_PUBLIC_DOMAIN_NAME: ${{ needs.set-up-infra.outputs.vector_index_endpoint_public_domain_name }}
+      VECTOR_INDEX_ID: ${{ needs.set-up-infra.outputs.vector_index_id }}
+      DEPLOYED_VECTOR_INDEX_ID: ${{ needs.set-up-infra.outputs.deployed_vector_index_id }}
+      TOPIC_ID_CONVERSATION: ${{ needs.set-up-infra.outputs.topic_id_conversation }}
+      REDIS_IP_ADDRESS: ${{ needs.set-up-infra.outputs.REDIS_IP_ADDRESS }}
+      REDIS_PORT: ${{ needs.set-up-infra.outputs.REDIS_PORT }}
+      MOCK_LLM_SERVER_URL: ${{ needs.set-up-infra.outputs.mock_llm_server_url }}
+    secrets:
+      SVC_ACCOUNT_KEY: ${{ secrets.SVC_ACCOUNT_KEY }}
