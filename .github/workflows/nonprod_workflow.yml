@@ -18,7 +18,7 @@ jobs:
       SVC_ACCOUNT_KEY: ${{ secrets.SVC_ACCOUNT_KEY }}
 
   docker-build-push-deploy-auto-tagging-api:
-    name: "Search API"
+    name: "Auto Tagging API"
     uses: ./.github/workflows/build_deploy.yml
     needs: [set-up-infra]
     with:
