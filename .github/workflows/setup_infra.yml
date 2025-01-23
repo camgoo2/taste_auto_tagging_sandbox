@@ -1,0 +1,47 @@
+name: Set up infra with Terraform
+on:
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        required: true
+        type: string
+    secrets:
+      SVC_ACCOUNT_KEY:
+        required: true
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.ENVIRONMENT }}
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: "infra/environments/${{ inputs.ENVIRONMENT }}"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Install TF CLI
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.SVC_ACCOUNT_KEY }}"
+          create_credentials_file: true
+          export_environment_variables: true
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan -var-file=terraform.tfvars -out=tfplan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
