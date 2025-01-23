@@ -17,14 +17,14 @@ jobs:
     secrets:
       SVC_ACCOUNT_KEY: ${{ secrets.SVC_ACCOUNT_KEY }}
 
-  docker-build-push-deploy-search-api:
+  docker-build-push-deploy-auto-tagging-api:
     name: "Search API"
     uses: ./.github/workflows/build_deploy.yml
     needs: [set-up-infra]
     with:
-      ENVIRONMENT: nprod
+      ENVIRONMENT: nonprod
       IMAGE_NAME: ${{ needs.set-up-infra.outputs.cloud_run_service_name }}
-      WORKING_DIR: search
+      WORKING_DIR: src
       JOB_SERVICE: SERVICE
       PROJECT_ID: ${{ needs.set-up-infra.outputs.project_name }}
       LOCATION:  ${{ needs.set-up-infra.outputs.location }}
