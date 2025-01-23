@@ -1,0 +1,110 @@
+name: Docker Build and Cloud Run Deploy
+on:
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        required: true
+        type: string
+      PROJECT_ID:
+        required: true
+        type: string
+      LOCATION:
+        required: true
+        type: string
+      USE_CASE:
+        required: true
+        type: string
+      DATASET_ID:
+        required: true
+        type: string
+      BQ_TABLE_PROCESSED_RECIPE_ID:
+        required: false
+        type: string
+      BQ_TABLE_EXCLUDE_RECIPE_ID:
+        required: false
+        type: string
+      IMAGE_NAME:
+        required: true
+        type: string
+      SERVICE_ACCOUNT:
+        required: true
+        type: string
+      WORKING_DIR:
+        required: true
+        type: string
+      JOB_SERVICE:
+        required: true
+        type: string
+    secrets:
+      SVC_ACCOUNT_KEY:
+        required: true
+
+env:
+  REMOTE_IMAGE_PATH: "${{ inputs.LOCATION }}-docker.pkg.dev/${{ inputs.PROJECT_ID }}/${{ inputs.USE_CASE }}/${{ inputs.IMAGE_NAME }}"
+
+jobs:
+  build:
+    name: Build Docker image + deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.ENVIRONMENT }}
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ inputs.WORKING_DIR }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.SVC_ACCOUNT_KEY }}
+
+      - name: 'Setup Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          install_components: 'beta'
+
+      - name: 'Setup docker'
+        run: gcloud auth configure-docker ${{ inputs.LOCATION }}-docker.pkg.dev
+
+      - name: 'Docker build'
+        run: |
+          echo "docker build . -t ${{ inputs.IMAGE_NAME }}:local -t ${{ inputs.IMAGE_NAME }}:${GITHUB_SHA}"
+          docker build . -t ${{ inputs.IMAGE_NAME }}:local -t ${{ inputs.IMAGE_NAME }}:${GITHUB_SHA}
+
+      - name: 'Docker Image Scan'
+        uses: anchore/scan-action@v3
+        with:
+         fail-build: false
+         image: ${{ inputs.IMAGE_NAME }}:local
+         only-fixed: true
+         output-format: table
+         severity-cutoff: critical
+
+      - name: 'Docker tag & push'
+        run: |
+          echo "docker push ${{ env.REMOTE_IMAGE_PATH }}:${GITHUB_SHA}"
+          docker tag ${{ inputs.IMAGE_NAME }}:${GITHUB_SHA} "${{ env.REMOTE_IMAGE_PATH }}:${GITHUB_SHA}"
+          docker tag ${{ inputs.IMAGE_NAME }}:${GITHUB_SHA} "${{ env.REMOTE_IMAGE_PATH }}:latest"
+          docker push "${{ env.REMOTE_IMAGE_PATH }}:${GITHUB_SHA}"
+          docker push "${{ env.REMOTE_IMAGE_PATH }}:latest"
+
+
+      - name: Deploy to Cloud Run Services
+        if: ${{ inputs.JOB_SERVICE == 'SERVICE' }}
+        run: |
+          gcloud beta run deploy ${{ inputs.IMAGE_NAME }} \
+            --image ${{ env.REMOTE_IMAGE_PATH }}:latest \
+            --region ${{ inputs.LOCATION }} \
+            --service-account=${{ inputs.SERVICE_ACCOUNT }} \
+            --set-env-vars PROJECT_ID=${{ inputs.PROJECT_ID }} \
+            --no-allow-unauthenticated \
+            #--vpc-connector ${{ inputs.USE_CASE }} \
+            #--cpu 8 \
+            #--memory 4Gi \
+            #--min-instances 1 \
+            #--service-min-instances 1
