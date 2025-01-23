@@ -31,13 +31,5 @@ jobs:
       USE_CASE:  ${{ needs.set-up-infra.outputs.use_case }}
       DATASET_ID: ${{ needs.set-up-infra.outputs.dataset_id }}
       SERVICE_ACCOUNT: ${{ needs.set-up-infra.outputs.mlops_sa_email }}
-      VECTOR_INDEX_ENDPOINT_ID: ${{ needs.set-up-infra.outputs.vector_index_endpoint_id }}
-      VECTOR_INDEX_ENDPOINT_PUBLIC_DOMAIN_NAME: ${{ needs.set-up-infra.outputs.vector_index_endpoint_public_domain_name }}
-      VECTOR_INDEX_ID: ${{ needs.set-up-infra.outputs.vector_index_id }}
-      DEPLOYED_VECTOR_INDEX_ID: ${{ needs.set-up-infra.outputs.deployed_vector_index_id }}
-      TOPIC_ID_CONVERSATION: ${{ needs.set-up-infra.outputs.topic_id_conversation }}
-      REDIS_IP_ADDRESS: ${{ needs.set-up-infra.outputs.REDIS_IP_ADDRESS }}
-      REDIS_PORT: ${{ needs.set-up-infra.outputs.REDIS_PORT }}
-      MOCK_LLM_SERVER_URL: ${{ needs.set-up-infra.outputs.mock_llm_server_url }}
     secrets:
       SVC_ACCOUNT_KEY: ${{ secrets.SVC_ACCOUNT_KEY }}
