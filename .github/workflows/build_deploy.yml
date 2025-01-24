@@ -89,7 +89,7 @@ jobs:
 
       - name: 'Docker Push'
         run: |
-          docker push australia-southeast1-docker.pkg.dev/even-lyceum-400005/taste-auto-tagging-sandbox/ai-auto-tagging-api:latest
+          docker push "${REMOTE_IMAGE_PATH}:latest"
           
       # - name: Deploy to Cloud Run Services
       #   if: ${{ inputs.JOB_SERVICE == 'SERVICE' }}
