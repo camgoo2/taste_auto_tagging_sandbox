@@ -67,7 +67,7 @@ jobs:
 
       - name: 'Docker build'
         run: |
-          docker build -t "${REMOTE_IMAGE_PATH}:latest" .
+          docker build -t ${REMOTE_IMAGE_PATH}:latest .
 
       # - name: 'Docker Image Scan'
       #   uses: anchore/scan-action@v3
@@ -80,7 +80,7 @@ jobs:
 
       - name: 'Docker Push'
         run: |
-          docker push "${REMOTE_IMAGE_PATH}:latest"
+          docker push ${REMOTE_IMAGE_PATH}:latest
 
       - name: Deploy to Cloud Run Services
         run: |
@@ -90,7 +90,7 @@ jobs:
             --service-account=${{ inputs.SERVICE_ACCOUNT }} \
             --set-env-vars PROJECT_ID=${{ inputs.PROJECT_ID }} \
             --no-allow-unauthenticated \
-            --cpu 8 \
+            # --cpu 8 \
             --memory 4Gi \
             --min-instances 1 \
             --service-min-instances 1
