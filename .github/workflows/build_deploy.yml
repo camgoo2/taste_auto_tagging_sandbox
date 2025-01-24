@@ -18,12 +18,6 @@ on:
       DATASET_ID:
         required: true
         type: string
-      BQ_TABLE_PROCESSED_RECIPE_ID:
-        required: false
-        type: string
-      BQ_TABLE_EXCLUDE_RECIPE_ID:
-        required: false
-        type: string
       IMAGE_NAME:
         required: true
         type: string
@@ -67,7 +61,8 @@ jobs:
 
       - name: 'Docker build'
         run: |
-          docker build -t ${REMOTE_IMAGE_PATH}:latest .
+          echo "docker build -t ${REMOTE_IMAGE_PATH}:${GITHUB_SHA} ."
+          docker build -t ${REMOTE_IMAGE_PATH}:${GITHUB_SHA} .
 
       # - name: 'Docker Image Scan'
       #   uses: anchore/scan-action@v3
@@ -80,7 +75,8 @@ jobs:
 
       - name: 'Docker Push'
         run: |
-          docker push ${REMOTE_IMAGE_PATH}:latest
+          echo "docker push ${REMOTE_IMAGE_PATH}:${GITHUB_SHA}"
+          docker push ${REMOTE_IMAGE_PATH}:${GITHUB_SHA}
 
       - name: Deploy to Cloud Run Services
         run: |
@@ -91,6 +87,6 @@ jobs:
             --set-env-vars PROJECT_ID=${{ inputs.PROJECT_ID }} \
             --no-allow-unauthenticated \
             # --cpu 8 \
-            --memory 4Gi \
+            # --memory 4Gi \
             --min-instances 1 \
             --service-min-instances 1
