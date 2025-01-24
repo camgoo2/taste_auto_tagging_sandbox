@@ -75,35 +75,30 @@ jobs:
         run: |
           docker build -t australia-southeast1-docker.pkg.dev/even-lyceum-400005/taste-auto-tagging-sandbox/ai-auto-tagging-api:latest .
 
-      - name: 'Docker Image Scan'
-        uses: anchore/scan-action@v3
-        with:
-         fail-build: false
-         image: ${{ inputs.IMAGE_NAME }}:local
-         only-fixed: true
-         output-format: table
-         severity-cutoff: critical
+      # - name: 'Docker Image Scan'
+      #   uses: anchore/scan-action@v3
+      #   with:
+      #    fail-build: false
+      #    image: ${{ inputs.IMAGE_NAME }}:local
+      #    only-fixed: true
+      #    output-format: table
+      #    severity-cutoff: critical
 
-      - name: 'Docker tag & push'
+      - name: 'Docker Push'
         run: |
-          echo "docker push ${{ env.REMOTE_IMAGE_PATH }}:${GITHUB_SHA}"
-          docker tag ${{ inputs.IMAGE_NAME }}:${GITHUB_SHA} "${{ env.REMOTE_IMAGE_PATH }}:${GITHUB_SHA}"
-          docker tag ${{ inputs.IMAGE_NAME }}:${GITHUB_SHA} "${{ env.REMOTE_IMAGE_PATH }}:latest"
-          docker push "${{ env.REMOTE_IMAGE_PATH }}:${GITHUB_SHA}"
-          docker push "${{ env.REMOTE_IMAGE_PATH }}:latest"
-
-
-      - name: Deploy to Cloud Run Services
-        if: ${{ inputs.JOB_SERVICE == 'SERVICE' }}
-        run: |
-          gcloud beta run deploy ${{ inputs.IMAGE_NAME }} \
-            --image ${{ env.REMOTE_IMAGE_PATH }}:latest \
-            --region ${{ inputs.LOCATION }} \
-            --service-account=${{ inputs.SERVICE_ACCOUNT }} \
-            --set-env-vars PROJECT_ID=${{ inputs.PROJECT_ID }} \
-            --no-allow-unauthenticated \
-            #--vpc-connector ${{ inputs.USE_CASE }} \
-            #--cpu 8 \
-            #--memory 4Gi \
-            #--min-instances 1 \
-            #--service-min-instances 1
+          docker push australia-southeast1-docker.pkg.dev/even-lyceum-400005/taste-auto-tagging-sandbox/ai-auto-tagging-api:latest
+          
+      # - name: Deploy to Cloud Run Services
+      #   if: ${{ inputs.JOB_SERVICE == 'SERVICE' }}
+      #   run: |
+      #     gcloud beta run deploy ${{ inputs.IMAGE_NAME }} \
+      #       --image ${{ env.REMOTE_IMAGE_PATH }}:latest \
+      #       --region ${{ inputs.LOCATION }} \
+      #       --service-account=${{ inputs.SERVICE_ACCOUNT }} \
+      #       --set-env-vars PROJECT_ID=${{ inputs.PROJECT_ID }} \
+      #       --no-allow-unauthenticated \
+      #       #--vpc-connector ${{ inputs.USE_CASE }} \
+      #       #--cpu 8 \
+      #       #--memory 4Gi \
+      #       #--min-instances 1 \
+      #       #--service-min-instances 1
