@@ -24,7 +24,6 @@ jobs:
     with:
       ENVIRONMENT: nonprod
       IMAGE_NAME: ${{ needs.set-up-infra.outputs.cloud_run_service_name }}
-      WORKING_DIR: src
       JOB_SERVICE: SERVICE
       PROJECT_ID: ${{ needs.set-up-infra.outputs.project_name }}
       LOCATION:  ${{ needs.set-up-infra.outputs.location }}
