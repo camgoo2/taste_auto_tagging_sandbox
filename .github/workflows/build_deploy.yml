@@ -73,6 +73,7 @@ jobs:
       - name: 'Docker build'
         run: |
           echo "docker build -t australia-southeast1-docker.pkg.dev/even-lyceum-400005/taste-auto-tagging-sandbox/ai-auto-tagging-api:latest ."
+          echo "Expected tag: ${REMOTE_IMAGE_PATH}:latest"
           docker build -t "${REMOTE_IMAGE_PATH}:latest" .
 
       # - name: 'Docker Image Scan'
