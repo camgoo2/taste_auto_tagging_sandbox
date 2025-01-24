@@ -83,7 +83,6 @@ jobs:
           docker push "${REMOTE_IMAGE_PATH}:latest"
 
       - name: Deploy to Cloud Run Services
-        if: ${{ inputs.JOB_SERVICE == 'SERVICE' }}
         run: |
           gcloud beta run deploy ${{ inputs.IMAGE_NAME }} \
             --image ${{ env.REMOTE_IMAGE_PATH }}:latest \
