@@ -80,7 +80,7 @@ jobs:
 
       - name: Deploy to Cloud Run Services
         run: |
-          gcloud beta run deploy ${{ inputs.IMAGE_NAME }} \
+          gcloud run deploy ${{ inputs.IMAGE_NAME }} \
             --image ${{ env.REMOTE_IMAGE_PATH }}:latest \
             --region ${{ inputs.LOCATION }} \
             --service-account=${{ inputs.SERVICE_ACCOUNT }} \
@@ -88,5 +88,5 @@ jobs:
             --no-allow-unauthenticated \
             # --cpu 8 \
             # --memory 4Gi \
-            --min-instances 1 \
-            --service-min-instances 1
+            # --min-instances 1 \
+            # --service-min-instances 1
