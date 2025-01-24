@@ -30,12 +30,6 @@ on:
       SERVICE_ACCOUNT:
         required: true
         type: string
-      # WORKING_DIR:
-      #   required: true
-      #   type: string
-      JOB_SERVICE:
-        required: true
-        type: string
     secrets:
       SVC_ACCOUNT_KEY:
         required: true
@@ -73,9 +67,6 @@ jobs:
 
       - name: 'Docker build'
         run: |
-          echo "Image Name : ${{ inputs.IMAGE_NAME }}"
-          echo "docker build -t australia-southeast1-docker.pkg.dev/even-lyceum-400005/taste-auto-tagging-sandbox/ai-auto-tagging-api:latest ."
-          echo "Expected tag: ${REMOTE_IMAGE_PATH}:latest"
           docker build -t "${REMOTE_IMAGE_PATH}:latest" .
 
       # - name: 'Docker Image Scan'
@@ -90,7 +81,7 @@ jobs:
       - name: 'Docker Push'
         run: |
           docker push "${REMOTE_IMAGE_PATH}:latest"
-          
+
       # - name: Deploy to Cloud Run Services
       #   if: ${{ inputs.JOB_SERVICE == 'SERVICE' }}
       #   run: |
