@@ -52,7 +52,6 @@ jobs:
     defaults:
       run:
         shell: bash
-        # working-directory: ${{ inputs.WORKING_DIR }}
 
     steps:
       - name: Checkout code
@@ -73,7 +72,8 @@ jobs:
 
       - name: 'Docker build'
         run: |
-          docker build -t australia-southeast1-docker.pkg.dev/even-lyceum-400005/taste-auto-tagging-sandbox/ai-auto-tagging-api:latest .
+          # docker build -t australia-southeast1-docker.pkg.dev/even-lyceum-400005/taste-auto-tagging-sandbox/ai-auto-tagging-api:latest .
+          docker build -t ${REMOTE_IMAGE_PATH}:latest .
 
       # - name: 'Docker Image Scan'
       #   uses: anchore/scan-action@v3
