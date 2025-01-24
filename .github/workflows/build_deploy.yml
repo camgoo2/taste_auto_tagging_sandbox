@@ -82,17 +82,16 @@ jobs:
         run: |
           docker push "${REMOTE_IMAGE_PATH}:latest"
 
-      # - name: Deploy to Cloud Run Services
-      #   if: ${{ inputs.JOB_SERVICE == 'SERVICE' }}
-      #   run: |
-      #     gcloud beta run deploy ${{ inputs.IMAGE_NAME }} \
-      #       --image ${{ env.REMOTE_IMAGE_PATH }}:latest \
-      #       --region ${{ inputs.LOCATION }} \
-      #       --service-account=${{ inputs.SERVICE_ACCOUNT }} \
-      #       --set-env-vars PROJECT_ID=${{ inputs.PROJECT_ID }} \
-      #       --no-allow-unauthenticated \
-      #       #--vpc-connector ${{ inputs.USE_CASE }} \
-      #       #--cpu 8 \
-      #       #--memory 4Gi \
-      #       #--min-instances 1 \
-      #       #--service-min-instances 1
+      - name: Deploy to Cloud Run Services
+        if: ${{ inputs.JOB_SERVICE == 'SERVICE' }}
+        run: |
+          gcloud beta run deploy ${{ inputs.IMAGE_NAME }} \
+            --image ${{ env.REMOTE_IMAGE_PATH }}:latest \
+            --region ${{ inputs.LOCATION }} \
+            --service-account=${{ inputs.SERVICE_ACCOUNT }} \
+            --set-env-vars PROJECT_ID=${{ inputs.PROJECT_ID }} \
+            --no-allow-unauthenticated \
+            --cpu 8 \
+            --memory 4Gi \
+            --min-instances 1 \
+            --service-min-instances 1
