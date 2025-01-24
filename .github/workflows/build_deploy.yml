@@ -73,8 +73,7 @@ jobs:
 
       - name: 'Docker build'
         run: |
-          echo "docker build . -t ${{ inputs.IMAGE_NAME }}:local -t ${{ inputs.IMAGE_NAME }}:${GITHUB_SHA}"
-          docker build . -t ${{ inputs.IMAGE_NAME }}:local -t ${{ inputs.IMAGE_NAME }}:${GITHUB_SHA}
+          docker build -t australia-southeast1-docker.pkg.dev/even-lyceum-400005/taste-auto-tagging-sandbox/ai-auto-tagging-api:$latest .
 
       - name: 'Docker Image Scan'
         uses: anchore/scan-action@v3
