@@ -81,7 +81,7 @@ jobs:
       - name: Deploy to Cloud Run Services
         run: |
           gcloud run deploy ${{ inputs.IMAGE_NAME }} \
-            --image ${{ env.REMOTE_IMAGE_PATH }}:latest \
+            --image ${REMOTE_IMAGE_PATH}:${GITHUB_SHA} \
             --region ${{ inputs.LOCATION }} \
             --service-account=${{ inputs.SERVICE_ACCOUNT }} \
             --set-env-vars PROJECT_ID=${{ inputs.PROJECT_ID }} \
