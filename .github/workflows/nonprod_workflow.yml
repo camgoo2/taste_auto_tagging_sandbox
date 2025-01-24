@@ -24,7 +24,6 @@ jobs:
     with:
       ENVIRONMENT: nonprod
       IMAGE_NAME: ${{ needs.set-up-infra.outputs.cloud_run_service_name }}
-      JOB_SERVICE: SERVICE
       PROJECT_ID: ${{ needs.set-up-infra.outputs.project_name }}
       LOCATION:  ${{ needs.set-up-infra.outputs.location }}
       USE_CASE:  ${{ needs.set-up-infra.outputs.use_case }}
