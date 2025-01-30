@@ -3,7 +3,7 @@ name: NonProd Workflow
 on:
   push:
     branches:
-      - main
+      - test_workflow
   pull_request:
     branches:
       - main
