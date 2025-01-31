@@ -33,8 +33,12 @@ class RecipeTagging:
         prompt_data = {
             "title": recipe_tagging_request.title,
             "description": recipe_tagging_request.description,
-            "method_steps": ", ".join(recipe_tagging_request.method_steps),
-            "ingredients": ". ".join(recipe_tagging_request.ingredients),
+            "method_steps": ", ".join(recipe_tagging_request.method_steps)
+            if recipe_tagging_request.method_steps
+            else "",
+            "ingredients": ". ".join(recipe_tagging_request.ingredients)
+            if recipe_tagging_request.ingredients
+            else "",
         }
         # Generate model prompt based on the recipe
         prompt = RECIPE_TAGGING_PROMPT.format(
