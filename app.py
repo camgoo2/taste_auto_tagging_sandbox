@@ -1,9 +1,10 @@
 import logging
 import uuid
+import time
 
 from fastapi import FastAPI
 from fastapi import HTTPException
-from google.cloud import logging as cloud_logging  # Import the Google Cloud Logging client
+from google.cloud import logging as cloud_logging 
 
 from src.config import PROJECT_ID
 from src.llms.gemini import Gemini
@@ -42,31 +43,43 @@ def health_check() -> dict:
 def predict_recipe_tags(
     recipe_tagging_request: RecipeTaggingRequest,
 ) -> RecipeTaggingResponse:
-    # Validate request input
-    if recipe_tagging_request is None:
-        raise HTTPException(status_code=400, detail="Missing request body")
-    elif not recipe_tagging_request.description:
-        raise HTTPException(status_code=400, detail="Missing recipe description")
-    elif not recipe_tagging_request.title:
-        raise HTTPException(status_code=400, detail="Missing recipe title")
-    elif len(recipe_tagging_request.ingredients) == 0:
-        raise HTTPException(status_code=400, detail="Empty Ingredient List")
-    elif len(recipe_tagging_request.method_steps) == 0:
-        raise HTTPException(status_code=400, detail="Empty Method Step List")
-    elif (
-        recipe_tagging_request.max_num_of_tags
-        and recipe_tagging_request.max_num_of_tags < 1
-    ):
-        raise HTTPException(
-            status_code=400, detail="Maxiumum number of tags should be greater than 0"
-        )
-
     prediction_id = str(uuid.uuid4())
+    logger.info("Request received for Prediction ID: %s",prediction_id)
+    try:
+        logger.info("Validating request input for Prediction ID: %s",prediction_id)
+        if recipe_tagging_request is None:
+            raise HTTPException(status_code=400, detail="Missing request body")
+        elif not recipe_tagging_request.description:
+            raise HTTPException(status_code=400, detail="Missing recipe description")
+        elif not recipe_tagging_request.title:
+            raise HTTPException(status_code=400, detail="Missing recipe title")
+        elif len(recipe_tagging_request.ingredients) == 0:
+            raise HTTPException(status_code=400, detail="Empty Ingredient List")
+        elif len(recipe_tagging_request.method_steps) == 0:
+            raise HTTPException(status_code=400, detail="Empty Method Step List")
+        elif (
+            recipe_tagging_request.max_num_of_tags
+            and recipe_tagging_request.max_num_of_tags < 1
+        ):
+            raise HTTPException(
+                status_code=400, detail="Maxiumum number of tags should be greater than 0"
+            )
+    except HTTPException as e:
+        logger.error("The JSON body was not complete: %s", e.detail)
+        raise
+
+    
+    start_time = time.time()  # Start the timer
 
     llm_response = recipe_tagging.generate_tags(
         recipe_tagging_request=recipe_tagging_request, llm_model=llm_model
     )
-    print(f"llm response{llm_response}")
+    
+    end_time = time.time()  # End the timer
+    elapsed_time = end_time - start_time  # Calculate elapsed time
+    
+    logger.info("LLM response time: %.3f seconds", elapsed_time)
+    
     json_llm_response = parse_json_from_gemini(json_str=llm_response)
 
     # Parse the response into PredictedTag objects
