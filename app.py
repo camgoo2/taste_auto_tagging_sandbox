@@ -63,7 +63,7 @@ def predict_recipe_tags(
         logger.error("Missing Ingredient List")
         raise HTTPException(status_code=400, detail="Missing Method Step List")
     elif (
-        recipe_tagging_request.max_num_of_tags
+        recipe_tagging_request.max_num_of_tags is not None
         and recipe_tagging_request.max_num_of_tags < 1
     ):
         logger.error("Maxiumum number of tags should be greater than 0")
