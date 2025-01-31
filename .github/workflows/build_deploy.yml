@@ -1,0 +1,92 @@
+
+name: Docker Build and Cloud Run Deploy
+on:
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        required: true
+        type: string
+      PROJECT_ID:
+        required: true
+        type: string
+      LOCATION:
+        required: true
+        type: string
+      USE_CASE:
+        required: true
+        type: string
+      DATASET_ID:
+        required: true
+        type: string
+      IMAGE_NAME:
+        required: true
+        type: string
+      SERVICE_ACCOUNT:
+        required: true
+        type: string
+    secrets:
+      SVC_ACCOUNT_KEY:
+        required: true
+
+env:
+  REMOTE_IMAGE_PATH: "${{ inputs.LOCATION }}-docker.pkg.dev/${{ inputs.PROJECT_ID }}/${{ inputs.USE_CASE }}/${{ inputs.IMAGE_NAME }}"
+
+jobs:
+  build:
+    name: Build Docker image + deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.ENVIRONMENT }}
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.SVC_ACCOUNT_KEY }}
+
+      - name: 'Setup Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          install_components: 'beta'
+
+      - name: 'Setup docker'
+        run: gcloud auth configure-docker ${{ inputs.LOCATION }}-docker.pkg.dev
+
+      - name: 'Docker build'
+        run: |
+          echo "docker build -t ${REMOTE_IMAGE_PATH}:${GITHUB_SHA} ."
+          docker build -t ${REMOTE_IMAGE_PATH}:${GITHUB_SHA} .
+
+      # - name: 'Docker Image Scan'
+      #   uses: anchore/scan-action@v3
+      #   with:
+      #    fail-build: false
+      #    image: ${{ inputs.IMAGE_NAME }}:local
+      #    only-fixed: true
+      #    output-format: table
+      #    severity-cutoff: critical
+
+      - name: 'Docker Push'
+        run: |
+          echo "docker push ${REMOTE_IMAGE_PATH}:${GITHUB_SHA}"
+          docker push ${REMOTE_IMAGE_PATH}:${GITHUB_SHA}
+
+      - name: Deploy to Cloud Run Services
+        run: |
+          gcloud run deploy ${{ inputs.IMAGE_NAME }} \
+            --image ${REMOTE_IMAGE_PATH}:${GITHUB_SHA} \
+            --region ${{ inputs.LOCATION }} \
+            --service-account=${{ inputs.SERVICE_ACCOUNT }} \
+            --set-env-vars PROJECT_ID=${{ inputs.PROJECT_ID }} \
+            --no-allow-unauthenticated \
+            # --cpu 8 \
+            # --memory 4Gi \
+            # --min-instances 1 \
+            # --service-min-instances 1

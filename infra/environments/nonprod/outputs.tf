@@ -22,3 +22,8 @@ output "mlops_sa_email" {
   description = "Use case name using underscore for dataset"
   value = var.mlops_sa_email
 }
+
+output "cloud_run_service_name" {
+  description = "Name of deployed Cloud Run Service"
+  value = var.cloud_run_service_name
+}

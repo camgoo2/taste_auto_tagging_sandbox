@@ -23,11 +23,6 @@ variable "use_case" {
   description = "Use case name"
 }
 
-variable "use_case_conversation" {
-  type    = string
-  description = "Additional use case name for phase 2 conversation to not overwrite phase 1 infra"
-}
-
 variable "enable_apis" {
   default = true
   type    = bool
@@ -36,16 +31,6 @@ variable "enable_apis" {
 variable "apis" {
   type    = list(string)
   description = "List of GCP API to enable"
-}
-
-variable "topic_schema_path" {
-  type    = string
-  description = "The path to the topic schema to be used"
-}
-
-variable "topic_conversation_schema_path" {
-  type    = string
-  description = "The path to the topic schema to be used for conversation phase 2"
 }
 
 variable "dataset_id" {
@@ -86,11 +71,6 @@ variable "mlops_sa_email" {
 variable "mlops_sa_roles_list" {
     type = list(string)
     description = "List of IAM roles to assign to service account"
-}
-
-variable "cloud_run_job_name" {
-  type    = string
-  description = "Cloud Run Job name"
 }
 
 variable "cloud_run_service_name" {

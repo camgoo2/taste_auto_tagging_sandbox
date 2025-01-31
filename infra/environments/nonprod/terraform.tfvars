@@ -6,10 +6,6 @@ location_id = "australia-southeast1-c"
 
 use_case = "taste-auto-tagging-sandbox"
 
-use_case_conversation = "taiste-recipe-conversation"
-
-cloud_run_job_name = "data-preprocessing"
-
 cloud_run_service_name = "tagging-feedback-apis"
 
 enable_apis = true
@@ -20,10 +16,6 @@ apis = [
     "cloudresourcemanager.googleapis.com",
     "run.googleapis.com"
 ]
-
-topic_schema_path = "../../../search/config/pub_sub_schema.avsc"
-
-topic_conversation_schema_path = "../../../search/config/pub_sub_schema_conversation.avsc"
 
 dataset_id = "taste_auto_tagging"
 

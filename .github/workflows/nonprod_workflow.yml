@@ -1,0 +1,33 @@
+name: NonProd Workflow
+
+on:
+  push:
+    branches:
+      - test_workflow
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  set-up-infra:
+    name: "Set up Terraform"
+    uses: ./.github/workflows/setup_infra.yml
+    with:
+      ENVIRONMENT: nonprod
+    secrets:
+      SVC_ACCOUNT_KEY: ${{ secrets.SVC_ACCOUNT_KEY }}
+
+  docker-build-push-deploy-auto-tagging-api:
+    name: "Auto Tagging API"
+    uses: ./.github/workflows/build_deploy.yml
+    needs: [set-up-infra]
+    with:
+      ENVIRONMENT: nonprod
+      IMAGE_NAME: ${{ needs.set-up-infra.outputs.cloud_run_service_name }}
+      PROJECT_ID: ${{ needs.set-up-infra.outputs.project_name }}
+      LOCATION:  ${{ needs.set-up-infra.outputs.location }}
+      USE_CASE:  ${{ needs.set-up-infra.outputs.use_case }}
+      DATASET_ID: ${{ needs.set-up-infra.outputs.dataset_id }}
+      SERVICE_ACCOUNT: ${{ needs.set-up-infra.outputs.mlops_sa_email }}
+    secrets:
+      SVC_ACCOUNT_KEY: ${{ secrets.SVC_ACCOUNT_KEY }}
