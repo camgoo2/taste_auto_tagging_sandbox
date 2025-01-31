@@ -6,10 +6,10 @@ from typing import Optional
 
 @dataclass
 class RecipeTaggingRequest:
-    title: str
-    description: str
-    ingredients: List[str]
-    method_steps: List[str]
+    title: Optional[str] = None
+    description: Optional[str] = None
+    ingredients: Optional[List[str]] = None
+    method_steps: Optional[List[str]] = None
     max_num_of_tags: Optional[int] = 10
 
     def to_dict(self) -> Dict:
