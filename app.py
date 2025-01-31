@@ -32,7 +32,6 @@ llm_model = Gemini(
     max_output_tokens=1000,
 )
 
-
 @app.get("/health")
 def health_check() -> dict:
     logger.info("Received health request")
