@@ -4,6 +4,7 @@ import time
 
 from fastapi import FastAPI
 from fastapi import HTTPException
+from fastapi import Body
 from google.cloud import logging as cloud_logging 
 
 from src.config import PROJECT_ID
@@ -41,33 +42,35 @@ def health_check() -> dict:
 
 @app.post("/predict-recipe-tags")
 def predict_recipe_tags(
-    recipe_tagging_request: RecipeTaggingRequest,
+    recipe_tagging_request: RecipeTaggingRequest | None = Body(None),
 ) -> RecipeTaggingResponse:
     prediction_id = str(uuid.uuid4())
     logger.info("Request received for Prediction ID: %s",prediction_id)
-    try:
-        logger.info("Validating request input for Prediction ID: %s",prediction_id)
-        if recipe_tagging_request is None:
-            raise HTTPException(status_code=400, detail="Missing request body")
-        elif not recipe_tagging_request.description:
-            raise HTTPException(status_code=400, detail="Missing recipe description")
-        elif not recipe_tagging_request.title:
-            raise HTTPException(status_code=400, detail="Missing recipe title")
-        elif len(recipe_tagging_request.ingredients) == 0:
-            raise HTTPException(status_code=400, detail="Empty Ingredient List")
-        elif len(recipe_tagging_request.method_steps) == 0:
-            raise HTTPException(status_code=400, detail="Empty Method Step List")
-        elif (
-            recipe_tagging_request.max_num_of_tags
-            and recipe_tagging_request.max_num_of_tags < 1
-        ):
-            raise HTTPException(
-                status_code=400, detail="Maxiumum number of tags should be greater than 0"
-            )
-    except HTTPException as e:
-        logger.error("The JSON body was not complete: %s", e.detail)
-        raise
-
+    logger.info("Validating request input for Prediction ID: %s",prediction_id)
+    if recipe_tagging_request is None:
+        logger.error("Missing request body")
+        raise HTTPException(status_code=400, detail="Missing request body")
+    elif not recipe_tagging_request.description:
+        logger.error("Missing recipe description")
+        raise HTTPException(status_code=400, detail="Missing recipe description")
+    elif not recipe_tagging_request.title:
+        logger.error("Missing recipe title")
+        raise HTTPException(status_code=400, detail="Missing recipe title")
+    elif len(recipe_tagging_request.ingredients) == 0:
+        logger.error("Missing Ingredient List")
+        raise HTTPException(status_code=400, detail="Missing Ingredient List")
+    elif len(recipe_tagging_request.method_steps) == 0:
+        logger.error("Missing Ingredient List")
+        raise HTTPException(status_code=400, detail="Missing Method Step List")
+    elif (
+        recipe_tagging_request.max_num_of_tags
+        and recipe_tagging_request.max_num_of_tags < 1
+    ):
+        logger.error("Maxiumum number of tags should be greater than 0")
+        raise HTTPException(
+            status_code=400, detail="Maxiumum number of tags should be greater than 0"
+        )
+    
     
     start_time = time.time()  # Start the timer
 
