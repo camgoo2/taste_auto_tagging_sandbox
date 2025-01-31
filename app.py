@@ -46,7 +46,7 @@ def predict_recipe_tags(
     prediction_id = str(uuid.uuid4())
     logger.info("Request received for Prediction ID: %s",prediction_id)
     try:
-        logger.info("Validating request input for Prediction ID: %s",,prediction_id)
+        logger.info("Validating request input for Prediction ID: %s",prediction_id)
         if recipe_tagging_request is None:
             raise HTTPException(status_code=400, detail="Missing request body")
         elif not recipe_tagging_request.description:
