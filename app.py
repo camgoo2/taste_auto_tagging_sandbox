@@ -3,7 +3,6 @@ import uuid
 
 from fastapi import FastAPI
 from fastapi import HTTPException
-import google.cloud.logging as cloudlogging  # Using alias
 
 from src.config import PROJECT_ID
 from src.llms.gemini import Gemini
@@ -15,9 +14,8 @@ from src.recipe.recipe_models import RecipeTaggingResponse
 from src.recipe.recipe_tagging import RecipeTagging
 from src.utils import parse_json_from_gemini
 
-# Initialize logging client (outside the function to avoid unnecessary creation)
-logging_client = cloudlogging.Client() #Use the alias here
-logger = logging_client.logger('recipe-tagging-app') #Choose a descriptive logger name
+# Get a logger instance
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 recipe_tagging = RecipeTagging()
@@ -32,7 +30,7 @@ llm_model = Gemini(
 
 @app.get("/health")
 def health_check() -> dict:
-    logger.log(logging.INFO, "Received health request")  # Use structured logging if possible
+    logger.info("Recieved health request")
     return {"status": "ok"}
 
 
