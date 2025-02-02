@@ -1,11 +1,11 @@
 import logging
-import uuid
 import time
+import uuid
 
+from fastapi import Body
 from fastapi import FastAPI
 from fastapi import HTTPException
-from fastapi import Body
-from google.cloud import logging as cloud_logging 
+from google.cloud import logging as cloud_logging
 
 from src.config import PROJECT_ID
 from src.llms.gemini import Gemini
@@ -34,6 +34,7 @@ llm_model = Gemini(
     max_output_tokens=1000,
 )
 
+
 @app.get("/health")
 def health_check() -> dict:
     logger.info("Received health request")
@@ -45,8 +46,8 @@ def predict_recipe_tags(
     recipe_tagging_request: RecipeTaggingRequest | None = Body(None),
 ) -> RecipeTaggingResponse:
     prediction_id = str(uuid.uuid4())
-    logger.info("Request received for Prediction ID: %s",prediction_id)
-    logger.info("Validating request input for Prediction ID: %s",prediction_id)
+    logger.info("Request received for Prediction ID: %s", prediction_id)
+    logger.info("Validating request input for Prediction ID: %s", prediction_id)
     if recipe_tagging_request is None:
         logger.error("Missing request body")
         raise HTTPException(status_code=400, detail="Missing request body")
@@ -56,10 +57,10 @@ def predict_recipe_tags(
     elif not recipe_tagging_request.title:
         logger.error("Missing recipe title")
         raise HTTPException(status_code=400, detail="Missing recipe title")
-    elif len(recipe_tagging_request.ingredients) == 0:
+    elif not recipe_tagging_request.ingredients:
         logger.error("Missing Ingredient List")
         raise HTTPException(status_code=400, detail="Missing Ingredient List")
-    elif len(recipe_tagging_request.method_steps) == 0:
+    elif not recipe_tagging_request.method_steps:
         logger.error("Missing Ingredient List")
         raise HTTPException(status_code=400, detail="Missing Method Step List")
     elif (
@@ -70,19 +71,19 @@ def predict_recipe_tags(
         raise HTTPException(
             status_code=400, detail="Maxiumum number of tags should be greater than 0"
         )
-    
-    
+    logger.info("Request body is valid for Prediction ID: %s", prediction_id)
+
     start_time = time.time()  # Start the timer
 
     llm_response = recipe_tagging.generate_tags(
         recipe_tagging_request=recipe_tagging_request, llm_model=llm_model
     )
-    
+
     end_time = time.time()  # End the timer
     elapsed_time = end_time - start_time  # Calculate elapsed time
-    
+
     logger.info("LLM response time: %.3f seconds", elapsed_time)
-    
+
     json_llm_response = parse_json_from_gemini(json_str=llm_response)
 
     # Parse the response into PredictedTag objects
@@ -113,11 +114,13 @@ def predict_recipe_tags(
     errors_bq = recipe_tagging.save_prediction_result(recipe_tagging_request, response)
 
     if len(errors_bq) > 0:
+        logger.error("Could not save results for prediction_id: %s", prediction_id)
         error_message = f"""Could not save result for recipe title: {recipe_tagging_request.title},
             recipe description: {recipe_tagging_request.description}"""
 
         raise HTTPException(status_code=500, detail=error_message)
 
+    logger.info("Response generated: %s", response)
     return response
 
 
@@ -127,14 +130,22 @@ def save_prediction_feedback(
 ) -> dict:
     # Validate request input
     if recipe_feedback is None:
+        logger.error("Missing request body")
         raise HTTPException(status_code=400, detail="Missing request body")
 
     errors_bq = recipe_tagging.save_prediction_feedback_bq(recipe_feedback)
-
+    logger.info(
+        "Feedback saved successfully for Prediction ID: %s",
+        recipe_feedback.prediction_id,
+    )
     response = {"status": "success", "message": "Feedback saved successfully"}
 
     if len(errors_bq) > 0:
-        error_message = f"""Could not save for feedback prediction_id: {recipe_feedback.prediction_id}"""
+        logger.error(
+            "Could not save feedback for prediction_id: %s",
+            recipe_feedback.prediction_id,
+        )
+        error_message = f"""Could not save feedback for prediction_id: {recipe_feedback.prediction_id}"""
         raise HTTPException(status_code=500, detail=error_message)
 
     return response
