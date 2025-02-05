@@ -31,7 +31,6 @@ jobs:
       - name: Install Dependencies
         run: |
           cd ${{ matrix.project }}  # Change directory to project folder
-          export PYTHONPATH=$(pwd)
           poetry install --no-interaction
 
       - name: Verify Poetry Environment
@@ -43,4 +42,4 @@ jobs:
         run: |
           cd ${{ matrix.project }}
           source .venv/bin/activate  # Activate the virtual environment
-          poetry run pytest tests/  # Run tests in `tests/`
+          poetry run pytest tagging/tests/  # Run tests in `tests/`
