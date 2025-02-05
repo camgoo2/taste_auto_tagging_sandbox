@@ -31,6 +31,7 @@ jobs:
       - name: Install Dependencies
         run: |
           cd ${{ matrix.project }}  # Change directory to project folder
+          export PYTHONPATH=$(pwd)
           poetry install --no-interaction
 
       - name: Verify Poetry Environment
