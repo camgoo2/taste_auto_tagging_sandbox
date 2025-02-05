@@ -61,8 +61,8 @@ jobs:
 
       - name: 'Docker build'
         run: |
-          echo "docker build -t ${REMOTE_IMAGE_PATH}:${GITHUB_SHA} ."
-          docker build -t ${REMOTE_IMAGE_PATH}:${GITHUB_SHA} .
+          echo "docker build -t ${REMOTE_IMAGE_PATH}:${GITHUB_SHA} -f tagging/Dockerfile tagging/"
+          docker build -t ${REMOTE_IMAGE_PATH}:${GITHUB_SHA} -f tagging/Dockerfile tagging
 
       # - name: 'Docker Image Scan'
       #   uses: anchore/scan-action@v3
