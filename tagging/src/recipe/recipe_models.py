@@ -6,10 +6,10 @@ from typing import Optional
 
 @dataclass
 class RecipeTaggingRequest:
-    title: Optional[str] = None
-    description: Optional[str] = None
-    ingredients: Optional[List[str]] = None
-    method_steps: Optional[List[str]] = None
+    title: str
+    description: str
+    ingredients: List[str]
+    method_steps: List[str]
     max_num_of_tags: Optional[int] = 10
 
     def to_dict(self) -> Dict:
@@ -59,8 +59,8 @@ class SavedTag:
 @dataclass
 class RecipeFeedback:
     prediction_id: str
-    overall_feedback: Optional[int]
     saved_tags: List[SavedTag]
+    overall_feedback: int
 
 
 RECIPE_TAGGING_LLM_RESPONSE_SCHEMA = {

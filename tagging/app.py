@@ -2,11 +2,9 @@ import logging
 import time
 import uuid
 
-from fastapi import Body
 from fastapi import FastAPI
 from fastapi import HTTPException
 from google.cloud import logging as cloud_logging
-
 from src.config import PROJECT_ID
 from src.llms.gemini import Gemini
 from src.prompts import RECIPE_TAGGING_PROMPT_INSTRUCTIONS
@@ -43,46 +41,47 @@ def health_check() -> dict:
 
 @app.post("/predict-recipe-tags")
 def predict_recipe_tags(
-    recipe_tagging_request: RecipeTaggingRequest | None = Body(None),
+    recipe_tagging_request: RecipeTaggingRequest,
 ) -> RecipeTaggingResponse:
+    request_initiate_time = time.time()
     prediction_id = str(uuid.uuid4())
     logger.info("Request received for Prediction ID: %s", prediction_id)
     logger.info("Validating request input for Prediction ID: %s", prediction_id)
-    if recipe_tagging_request is None:
-        logger.error("Missing request body")
-        raise HTTPException(status_code=400, detail="Missing request body")
-    elif not recipe_tagging_request.description:
-        logger.error("Missing recipe description")
-        raise HTTPException(status_code=400, detail="Missing recipe description")
-    elif not recipe_tagging_request.title:
-        logger.error("Missing recipe title")
-        raise HTTPException(status_code=400, detail="Missing recipe title")
-    elif not recipe_tagging_request.ingredients:
-        logger.error("Missing Ingredient List")
-        raise HTTPException(status_code=400, detail="Missing Ingredient List")
-    elif not recipe_tagging_request.method_steps:
-        logger.error("Missing Ingredient List")
-        raise HTTPException(status_code=400, detail="Missing Method Step List")
-    elif (
-        recipe_tagging_request.max_num_of_tags is not None
-        and recipe_tagging_request.max_num_of_tags < 1
-    ):
-        logger.error("Maxiumum number of tags should be greater than 0")
-        raise HTTPException(
-            status_code=400, detail="Maxiumum number of tags should be greater than 0"
-        )
+    # if recipe_tagging_request is None:
+    #     logger.error("Missing request body")
+    #     raise HTTPException(status_code=400, detail="Missing request body")
+    # elif not recipe_tagging_request.description:
+    #     logger.error("Missing recipe description")
+    #     raise HTTPException(status_code=400, detail="Missing recipe description")
+    # elif not recipe_tagging_request.title:
+    #     logger.error("Missing recipe title")
+    #     raise HTTPException(status_code=400, detail="Missing recipe title")
+    # elif not recipe_tagging_request.ingredients:
+    #     logger.error("Missing Ingredient List")
+    #     raise HTTPException(status_code=400, detail="Missing Ingredient List")
+    # elif not recipe_tagging_request.method_steps:
+    #     logger.error("Missing Ingredient List")
+    #     raise HTTPException(status_code=400, detail="Missing Method Step List")
+    # elif (
+    #     recipe_tagging_request.max_num_of_tags is not None
+    #     and recipe_tagging_request.max_num_of_tags < 1
+    # ):
+    #     logger.error("Maxiumum number of tags should be greater than 0")
+    #     raise HTTPException(
+    #         status_code=400, detail="Maxiumum number of tags should be greater than 0"
+    #     )
     logger.info("Request body is valid for Prediction ID: %s", prediction_id)
 
-    start_time = time.time()  # Start the timer
+    llm_start_time = time.time()  # Start the timer
 
     llm_response = recipe_tagging.generate_tags(
         recipe_tagging_request=recipe_tagging_request, llm_model=llm_model
     )
 
-    end_time = time.time()  # End the timer
-    elapsed_time = end_time - start_time  # Calculate elapsed time
+    llm_end_time = time.time()  # End the timer
+    llm_response_time = llm_end_time - llm_start_time  # Calculate elapsed time
 
-    logger.info("LLM response time: %.3f seconds", elapsed_time)
+    logger.info("LLM response time: %.3f seconds", llm_response_time)
 
     json_llm_response = parse_json_from_gemini(json_str=llm_response)
 
@@ -121,6 +120,9 @@ def predict_recipe_tags(
         raise HTTPException(status_code=500, detail=error_message)
 
     logger.info("Response generated: %s", response)
+    request_end_time = time.time()
+    request_time = request_end_time - request_initiate_time
+    logger.info("Total request time: %.3f seconds", request_time)
     return response
 
 

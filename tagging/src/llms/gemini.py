@@ -1,13 +1,12 @@
 from typing import Dict
 
 import vertexai
+from src.config import PROJECT_ID
+from src.llms.llm_base import LLM
 from vertexai.generative_models import GenerationConfig
 from vertexai.generative_models import GenerativeModel
 from vertexai.generative_models import HarmBlockThreshold
 from vertexai.generative_models import HarmCategory
-
-from src.config import PROJECT_ID
-from src.llms.llm_base import LLM
 
 
 class Gemini(LLM):

@@ -3,7 +3,6 @@ from typing import Dict
 from typing import List
 
 import pytz  # type: ignore
-
 from src.config import FEEDBACK_DATASET_ID
 from src.config import FEEDBACK_TABLE_ID
 from src.config import PROJECT_ID
@@ -33,12 +32,8 @@ class RecipeTagging:
         prompt_data = {
             "title": recipe_tagging_request.title,
             "description": recipe_tagging_request.description,
-            "method_steps": ", ".join(recipe_tagging_request.method_steps)
-            if recipe_tagging_request.method_steps
-            else "",
-            "ingredients": ". ".join(recipe_tagging_request.ingredients)
-            if recipe_tagging_request.ingredients
-            else "",
+            "method_steps": ", ".join(recipe_tagging_request.method_steps),
+            "ingredients": ", ".join(recipe_tagging_request.ingredients),
         }
         # Generate model prompt based on the recipe
         prompt = RECIPE_TAGGING_PROMPT.format(
@@ -114,8 +109,6 @@ class RecipeTagging:
             table_id=RESULT_TABLE_ID,
             rows=bq_result,
         )
-
-        print(error_list)
         return error_list
 
     def save_prediction_feedback_bq(self, recipe_feedback: RecipeFeedback) -> List:
@@ -141,5 +134,4 @@ class RecipeTagging:
             rows=bq_result,
         )
 
-        print(error_list)
         return error_list
