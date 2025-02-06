@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.11"]  # Use Python 3.11 as specified in pyproject.toml
+        python-version: ["3.11"]
 
     steps:
       - uses: actions/checkout@v3
@@ -33,7 +33,11 @@ jobs:
       - name: Install Dependencies
         run: |
           cd tagging
-          poetry install --no-interaction --no-ansi --with dev #Installs dev dependencies defined in [tool.poetry.group.dev.dependencies]
+          poetry install --no-interaction --no-ansi --with dev
+
+      - name: Add 'tagging' to Python Path
+        run: |
+          echo "PYTHONPATH=$PWD" >> $GITHUB_ENV  # Adds the current working directory (tagging) to the PYTHONPATH
 
       - name: Run Tests
         run: |
