@@ -7,15 +7,15 @@ jobs:
     name: Lint and Test
     runs-on: ubuntu-latest
     environment: nonprod
-    env:
-      PROJECT_ID: ${{ secrets.PROJECT_ID }}
-      LOCATION: ${{ secrets.GCP_LOCATION }}
-      RESULT_DATASET_ID: "taste_auto_tagging"
-      RESULT_TABLE_ID: "entity_tag_prediction_result"
-      FEEDBACK_DATASET_ID : "taste_auto_tagging"
-      FEEDBACK_TABLE_ID: "entity_tag_prediction_feedback"
-      BQ_TABLE_PROCESSED_RECIPE_ID: "TEST"
-      BQ_TABLE_EXCLUDE_RECIPE_ID: "TEST"
+    # env:
+    #   PROJECT_ID: ${{ secrets.PROJECT_ID }}
+    #   LOCATION: ${{ secrets.GCP_LOCATION }}
+    #   RESULT_DATASET_ID: "taste_auto_tagging"
+    #   RESULT_TABLE_ID: "entity_tag_prediction_result"
+    #   FEEDBACK_DATASET_ID : "taste_auto_tagging"
+    #   FEEDBACK_TABLE_ID: "entity_tag_prediction_feedback"
+    #   BQ_TABLE_PROCESSED_RECIPE_ID: "TEST"
+    #   BQ_TABLE_EXCLUDE_RECIPE_ID: "TEST"
     strategy:
       matrix:
         project: ['tagging']  # List of project names
