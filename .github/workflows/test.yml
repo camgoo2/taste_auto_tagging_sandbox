@@ -39,6 +39,9 @@ jobs:
           cd tagging
           poetry install --no-interaction --no-ansi --with dev
 
+      - name: Print Environment Variables (Diagnostic)
+        run: printenv
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
         with:
