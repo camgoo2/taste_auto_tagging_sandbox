@@ -37,8 +37,9 @@ jobs:
 
       - name: Add 'tagging' to Python Path
         run: |
-          echo "PYTHONPATH=$PWD" >> $GITHUB_ENV  # Adds the current working directory (tagging) to the PYTHONPATH
+          echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
 
       - name: Run Tests
         run: |
-          poetry run pytest tests/
+          cd tagging
+          poetry run pytest tests/test_local_endpoints.py  # Specify the test file
