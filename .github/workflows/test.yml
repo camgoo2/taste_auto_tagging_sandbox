@@ -1,62 +1,63 @@
-name: Test API
+name: Lint and Test Jobs
 
-on:
-  workflow_call:
-    inputs:
-      ENVIRONMENT:
-        required: true
-        type: string
-    secrets:
-      SVC_ACCOUNT_KEY:
-        required: true
+on: push
 
 jobs:
-  test:
+  run-lint-and-pytest:
+    name: Lint and Test
     runs-on: ubuntu-latest
-
+    environment: nonprod
+    env:
+      PROJECT_ID: "TEST"
+      LOCATION: "TEST"
+      DATASET_ID: "TEST"
+      DATASTORE_ID: "TEST"
+      VECTOR_INDEX_ID: "TEST"
+      BUCKET: "TEST"
+      BQ_TABLE_PROCESSED_RECIPE_ID: "TEST"
+      BQ_TABLE_EXCLUDE_RECIPE_ID: "TEST"
+      TOPIC_ID: "TEST"
+      TOPIC_ID_CONVERSATION: "TEST"
+      VECTOR_INDEX_ENDPOINT_ID: "TEST"
+      VECTOR_INDEX_ENDPOINT_PUBLIC_DOMAIN_NAME: "TEST"
+      DEPLOYED_VECTOR_INDEX_ID: "TEST"
+      HISTORY_DATASTORE: "TEST"
     strategy:
       matrix:
-        python-version: ["3.11"]
+        project: ['tagging']  # List of project names
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
         with:
-          python-version: ${{ matrix.python-version }}
+          credentials_json: ${{ secrets.SVC_ACCOUNT_KEY }}
 
-      - name: Install Poetry
+      - name: Set up python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.8.2
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+
+      - name: Install project
         run: |
-          pip install poetry
+          cd ${{ matrix.project }}  # Change directory to the project folder
+          poetry install --no-interaction
 
-      - name: Configure Poetry
+      - name: Running Py tests
         run: |
-          poetry config virtualenvs.in-project true
-
-      - name: Install Dependencies
-        run: |
-          cd tagging
-          poetry install --no-interaction --no-ansi --with dev
-
-      - name: Debug Secrets
-        run: echo "Checking if SVC_ACCOUNT_KEY is passed"
+          cd ${{ matrix.project }}  # Change directory to the project folder
+          source .venv/bin/activate
+          poe test
         env:
           SVC_ACCOUNT_KEY: ${{ secrets.SVC_ACCOUNT_KEY }}
-
-      - id: "auth"
-        name: "Authenticate to Google Cloud"
-        uses: "google-github-actions/auth@v1"
-        with:
-          credentials_json: "${{ secrets.SVC_ACCOUNT_KEY }}"
-          create_credentials_file: true
-          export_environment_variables: true
-
-      - name: Add 'tagging' to Python Path
-        run: |
-          echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
-
-      - name: Run Tests
-        run: |
-          cd tagging
-          poetry run pytest tests/test_local_endpoints.py

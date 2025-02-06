@@ -9,14 +9,6 @@ on:
       - main
 
 jobs:
-  unit-tests:
-    name: "Run Unit tests"
-    uses: ./.github/workflows/test.yml
-    with:
-      ENVIRONMENT: nonprod
-    secrets:
-      SVC_ACCOUNT_KEY: ${{ secrets.SVC_ACCOUNT_KEY }}
-
   set-up-infra:
     name: "Set up Terraform"
     uses: ./.github/workflows/setup_infra.yml
