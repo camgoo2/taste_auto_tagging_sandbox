@@ -39,8 +39,10 @@ jobs:
           cd tagging
           poetry install --no-interaction --no-ansi --with dev
 
-      - name: Print Environment Variables (Diagnostic)
-        run: printenv
+      - name: Debug Secrets
+        run: echo "Checking if SVC_ACCOUNT_KEY is passed"
+        env:
+          SVC_ACCOUNT_KEY: ${{ secrets.SVC_ACCOUNT_KEY }}
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
