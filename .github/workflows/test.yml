@@ -44,10 +44,13 @@ jobs:
         env:
           SVC_ACCOUNT_KEY: ${{ secrets.SVC_ACCOUNT_KEY }}
 
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v1
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
         with:
-          credentials_json: ${{ secrets.SVC_ACCOUNT_KEY }}
+          credentials_json: "${{ secrets.SVC_ACCOUNT_KEY }}"
+          create_credentials_file: true
+          export_environment_variables: true
 
       - name: Add 'tagging' to Python Path
         run: |
