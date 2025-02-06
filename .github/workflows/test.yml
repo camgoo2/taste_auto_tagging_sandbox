@@ -48,6 +48,13 @@ jobs:
           cd ${{ matrix.project }}  # Change directory to the project folder
           poetry install --no-interaction
 
+      - name: Running Pre-commit Linting tests
+        run: |
+          cd ${{ matrix.project }}  # Change directory to the project folder
+          source .venv/bin/activate
+          pre-commit install
+          poe quality
+
       - name: Running Py tests
         run: |
           cd ${{ matrix.project }}  # Change directory to the project folder
