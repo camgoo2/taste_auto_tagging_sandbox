@@ -35,6 +35,11 @@ jobs:
           cd tagging
           poetry install --no-interaction --no-ansi --with dev
 
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.SVC_ACCOUNT_KEY }}
+
       - name: Add 'tagging' to Python Path
         run: |
           echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
@@ -42,4 +47,4 @@ jobs:
       - name: Run Tests
         run: |
           cd tagging
-          poetry run pytest tests/test_local_endpoints.py  # Specify the test file
+          poetry run pytest tests/test_local_endpoints.py
