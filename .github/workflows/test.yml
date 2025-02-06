@@ -10,10 +10,10 @@ jobs:
     env:
       PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       LOCATION: ${{ secrets.GCP_LOCATION }}
-      DATASET_ID: "TEST"
-      DATASTORE_ID: "TEST"
-      VECTOR_INDEX_ID: "TEST"
-      BUCKET: "TEST"
+      RESULT_DATASET_ID: "taste_auto_tagging"
+      RESULT_TABLE_ID: "entity_tag_prediction_result"
+      FEEDBACK_DATASET_ID : "taste_auto_tagging"
+      FEEDBACK_TABLE_ID: "entity_tag_prediction_feedback"
       BQ_TABLE_PROCESSED_RECIPE_ID: "TEST"
       BQ_TABLE_EXCLUDE_RECIPE_ID: "TEST"
     strategy:
