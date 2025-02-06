@@ -34,13 +34,7 @@ jobs:
           echo "pwd"
           poetry install --no-interaction
 
-      - name: Verify Poetry Environment
-        run: |
-          cd ${{ matrix.project }}
-          poetry env info  # Debug Poetry env setup
-
       - name: Run Pytests
         run: |
           cd ${{ matrix.project }}
-          source .venv/bin/activate  # Activate the virtual environment
           poetry run pytest tests/  # Run tests in `tests/`
