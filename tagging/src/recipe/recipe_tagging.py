@@ -23,7 +23,13 @@ from ..sql_queries import QUERY_TAXONOMY
 
 class RecipeTagging:
     def __init__(self) -> None:
+        print(f"DEBUG: QUERY_TAXONOMY = {QUERY_TAXONOMY}")  # Print QUERY_TAXONOMY
+        print(f"DEBUG: PROJECT_ID = {PROJECT_ID}")  # Print PROJECT_ID
+
         self.candidate_tags = fetch_candidate_tags(QUERY_TAXONOMY, PROJECT_ID)
+        print(
+            "DEBUG: fetch_candidate_tags executed successfully"
+        )  # Confirmation message
 
     def generate_tags(
         self, recipe_tagging_request: RecipeTaggingRequest, llm_model: LLM
