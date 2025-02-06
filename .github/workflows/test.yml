@@ -41,5 +41,4 @@ jobs:
 
       - name: Run Tests
         run: |
-          cd tagging
-          poetry run pytest tests/test_local_endpoints.py
+          pytest tests/
