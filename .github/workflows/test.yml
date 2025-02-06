@@ -1,10 +1,14 @@
 name: Test API
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        required: true
+        type: string
+    secrets:
+      SVC_ACCOUNT_KEY:
+        required: true
 
 jobs:
   test:
@@ -48,5 +52,3 @@ jobs:
         run: |
           cd tagging
           poetry run pytest tests/test_local_endpoints.py
-        env:
-          SVC_ACCOUNT_KEY: ${{ secrets.SVC_ACCOUNT_KEY }}
