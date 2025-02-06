@@ -47,6 +47,7 @@ def predict_recipe_tags(
     prediction_id = str(uuid.uuid4())
     logger.info("Request received for Prediction ID: %s", prediction_id)
     logger.info("Validating request input for Prediction ID: %s", prediction_id)
+
     # if recipe_tagging_request is None:
     #     logger.error("Missing request body")
     #     raise HTTPException(status_code=400, detail="Missing request body")
@@ -70,7 +71,7 @@ def predict_recipe_tags(
     #     raise HTTPException(
     #         status_code=400, detail="Maxiumum number of tags should be greater than 0"
     #     )
-    logger.info("Request body is valid for Prediction ID: %s", prediction_id)
+    #     logger.info("Request body is valid for Prediction ID: %s", prediction_id)
 
     llm_start_time = time.time()  # Start the timer
 
