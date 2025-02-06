@@ -9,19 +9,13 @@ jobs:
     environment: nonprod
     env:
       PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-      LOCATION: "TEST"
+      LOCATION: ${{ secrets.GCP_LOCATION }}
       DATASET_ID: "TEST"
       DATASTORE_ID: "TEST"
       VECTOR_INDEX_ID: "TEST"
       BUCKET: "TEST"
       BQ_TABLE_PROCESSED_RECIPE_ID: "TEST"
       BQ_TABLE_EXCLUDE_RECIPE_ID: "TEST"
-      TOPIC_ID: "TEST"
-      TOPIC_ID_CONVERSATION: "TEST"
-      VECTOR_INDEX_ENDPOINT_ID: "TEST"
-      VECTOR_INDEX_ENDPOINT_PUBLIC_DOMAIN_NAME: "TEST"
-      DEPLOYED_VECTOR_INDEX_ID: "TEST"
-      HISTORY_DATASTORE: "TEST"
     strategy:
       matrix:
         project: ['tagging']  # List of project names
