@@ -1,40 +1,41 @@
-name: Run FastAPI Tests
+name: Test API
 
-on: push
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   test:
-    name: Test
     runs-on: ubuntu-latest
-    environment: nonprod
+
     strategy:
       matrix:
-        project: ['tagging']  # Change if you have multiple projects
+        python-version: ["3.11"]  # Use Python 3.11 as specified in pyproject.toml
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
         with:
-          python-version: '3.11'
+          python-version: ${{ matrix.python-version }}
 
       - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: 1.8.2
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-          installer-parallel: true
+        run: |
+          pip install poetry
+
+      - name: Configure Poetry
+        run: |
+          poetry config virtualenvs.in-project true
 
       - name: Install Dependencies
         run: |
-          cd ${{ matrix.project }}  # Change directory to project folder
-          echo "pwd"
-          poetry install --no-interaction
+          cd tagging
+          poetry install --no-interaction --no-ansi --with dev #Installs dev dependencies defined in [tool.poetry.group.dev.dependencies]
 
-      - name: Run Pytests
+      - name: Run Tests
         run: |
-          cd ${{ matrix.project }}
-          poetry run pytest tests/  # Run tests in `tests/`
+          cd tagging
+          poetry run pytest tests/test_local_endpoints.py
