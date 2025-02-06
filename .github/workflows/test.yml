@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: nonprod
     env:
-      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      PROJECT_ID: "even-lyceum-400005"
       LOCATION: ${{ secrets.GCP_LOCATION }}
       RESULT_DATASET_ID: "taste_auto_tagging"
       RESULT_TABLE_ID: "entity_tag_prediction_result"
