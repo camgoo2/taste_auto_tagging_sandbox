@@ -48,3 +48,5 @@ jobs:
         run: |
           cd tagging
           poetry run pytest tests/test_local_endpoints.py
+        env:
+          SVC_ACCOUNT_KEY: ${{ secrets.SVC_ACCOUNT_KEY }}
